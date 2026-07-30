@@ -2,10 +2,11 @@
    Service Worker - 离线缓存
    ============================================ */
 
-const CACHE_NAME = 'item-locator-v1';
+const CACHE_NAME = 'item-locator-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
+  './standalone.html',
   './styles.css',
   './app.js',
   './manifest.json',
@@ -36,7 +37,8 @@ self.addEventListener('activate', event => {
   );
 });
 
-// 拦截请求：缓存优先 + 网络更新
+// 拦截请求：网络优先 + 缓存兜底
+// 每次先请求服务器拿最新版本，网络失败时才用缓存
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
 
@@ -44,18 +46,14 @@ self.addEventListener('fetch', event => {
   if (url.origin !== self.location.origin) return;
 
   event.respondWith(
-    caches.match(event.request).then(cached => {
-      const fetchPromise = fetch(event.request).then(response => {
-        if (response && response.ok) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(event.request, clone);
-          });
-        }
-        return response;
-      }).catch(() => cached);
-
-      return cached || fetchPromise;
-    })
+    fetch(event.request).then(response => {
+      if (response && response.ok) {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, clone);
+        });
+      }
+      return response;
+    }).catch(() => caches.match(event.request))
   );
 });
