@@ -1,0 +1,52 @@
+{
+  "name": "物品位置记录",
+  "short_name": "物品记录",
+  "description": "记录物品放在哪里，支持拍照、位置变更历史和快速搜索",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5f6f8",
+  "theme_color": "#4A90D9",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "categories": ["productivity", "utilities"],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "添加物品",
+      "short_name": "添加",
+      "url": "./index.html#/add"
+    },
+    {
+      "name": "搜索物品",
+      "short_name": "搜索",
+      "url": "./index.html#/search"
+    }
+  ]
+}
