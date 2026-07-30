@@ -19,37 +19,19 @@
   <link rel="shortcut icon" href="icons/favicon.ico" type="image/x-icon">
 
   <title>物品位置记录</title>
-  <link rel="stylesheet" href="styles.css">
+
+  <!-- 立即跳转到 standalone.html，不保留历史记录 -->
+  <script>
+    // 使用 replace 跳转，这样不会在历史记录中留下 index.html
+    // 加时间戳防止缓存
+    var target = './standalone.html' + location.hash;
+    location.replace(target);
+  </script>
+
+  <!-- 如果 JS 被禁用，用 meta refresh 兜底 -->
+  <meta http-equiv="refresh" content="0; url=standalone.html">
 </head>
 <body>
-  <div id="app">
-    <!-- 顶部导航栏 -->
-    <header class="app-header" id="app-header">
-      <button class="header-btn header-back" id="btn-back" aria-label="返回">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-      </button>
-      <h1 class="header-title" id="header-title">物品位置记录</h1>
-      <button class="header-btn header-search" id="btn-search" aria-label="搜索">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-      </button>
-    </header>
-
-    <!-- 主内容区域 -->
-    <main id="view-container"></main>
-
-    <!-- 悬浮添加按钮 -->
-    <button class="fab" id="fab-add" aria-label="添加物品">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-    </button>
-  </div>
-
-  <!-- 隐藏的文件输入（拍照/相册） -->
-  <input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none">
-  <input type="file" id="gallery-input" accept="image/*" style="display:none">
-
-  <!-- Toast 提示 -->
-  <div class="toast" id="toast"></div>
-
-  <script src="app.js"></script>
+  <p style="text-align:center;padding-top:40px;font-family:sans-serif;color:#8a8a8e;">正在加载...</p>
 </body>
 </html>
