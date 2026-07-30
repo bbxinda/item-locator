@@ -841,6 +841,89 @@ mark {
   }
 }
 
+/* ============================================
+   数据管理页
+   ============================================ */
+.data-mgmt-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-light);
+}
+
+.data-mgmt-card-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.data-mgmt-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 14px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.data-mgmt-info-row:last-child {
+  border-bottom: none;
+}
+
+.data-mgmt-info-label {
+  color: var(--text-secondary);
+}
+
+.data-mgmt-info-value {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.data-mgmt-desc {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+.data-mgmt-btn-group {
+  display: flex;
+  gap: 10px;
+}
+
+.data-mgmt-btn-group .btn {
+  flex: 1;
+  font-size: 14px;
+  padding: 12px;
+}
+
+/* 存储进度条 */
+.storage-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--border-light);
+  border-radius: 3px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+.storage-bar-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+
+/* 设置入口按钮（首页右上角） */
+.header-btn-settings svg {
+  transition: transform 0.3s;
+}
+
 </style>
 </head>
 <body>
@@ -853,6 +936,9 @@ mark {
       <h1 class="header-title" id="header-title">物品位置记录</h1>
       <button class="header-btn header-search" id="btn-search" aria-label="搜索">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </button>
+      <button class="header-btn header-settings" id="btn-settings" aria-label="数据管理">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
       </button>
     </header>
 
@@ -868,6 +954,9 @@ mark {
   <!-- 隐藏的文件输入（拍照/相册） -->
   <input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none">
   <input type="file" id="gallery-input" accept="image/*" style="display:none">
+
+  <!-- 隐藏的文件输入（导入数据） -->
+  <input type="file" id="import-input" accept=".json,application/json" style="display:none">
 
   <!-- Toast 提示 -->
   <div class="toast" id="toast"></div>
@@ -1081,8 +1170,119 @@ mark {
       const bytes = new Blob([data]).size;
       return {
         usedKB: Math.round(bytes / 1024),
+        usedBytes: bytes,
         percent: Math.round((bytes / (5 * 1024 * 1024)) * 100)
       };
+    },
+
+    /* ---- 数据导出 ---- */
+    exportData() {
+      const data = this.getAll();
+      const exportPayload = {
+        app: 'item-locator',
+        version: data.version || '1.0',
+        exportDate: new Date().toISOString(),
+        itemCount: data.items ? data.items.length : 0,
+        data: data
+      };
+      return JSON.stringify(exportPayload, null, 2);
+    },
+
+    downloadExportFile() {
+      const jsonStr = this.exportData();
+      const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const now = new Date();
+      const ts = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
+      const filename = `物品记录备份_${ts}.json`;
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 100);
+      return filename;
+    },
+
+    /* ---- 数据导入 ---- */
+    validateImportData(jsonStr) {
+      let parsed;
+      try {
+        parsed = JSON.parse(jsonStr);
+      } catch (e) {
+        return { valid: false, error: '文件不是有效的 JSON 格式' };
+      }
+
+      // 兼容两种格式：带包裹的导出格式 和 直接的数据格式
+      let data = parsed;
+      if (parsed.data && parsed.data.items !== undefined) {
+        data = parsed.data;
+      }
+
+      // 校验数据结构
+      if (!data || !Array.isArray(data.items)) {
+        return { valid: false, error: '文件格式不正确：缺少 items 列表' };
+      }
+
+      // 校验每个物品的结构
+      for (let i = 0; i < data.items.length; i++) {
+        const item = data.items[i];
+        if (!item.id || !item.name || !Array.isArray(item.locationHistory)) {
+          return { valid: false, error: `第 ${i+1} 个物品数据不完整（缺少 id、name 或 locationHistory）` };
+        }
+      }
+
+      return { valid: true, data: data };
+    },
+
+    importData(jsonStr, mode) {
+      const result = this.validateImportData(jsonStr);
+      if (!result.valid) return result;
+
+      const newData = result.data;
+
+      if (mode === 'replace') {
+        // 完全替换
+        if (!this.saveAll(newData)) {
+          return { valid: false, error: '保存失败：存储空间不足' };
+        }
+        return { valid: true, imported: newData.items.length, mode: 'replace' };
+      } else if (mode === 'merge') {
+        // 合并：以 id 去重，新数据覆盖同 id 的旧数据，全新的物品添加到前面
+        const current = this.getAll();
+        const existingMap = new Map(current.items.map(i => [i.id, i]));
+        let addedCount = 0;
+        let updatedCount = 0;
+
+        for (const newItem of newData.items) {
+          if (existingMap.has(newItem.id)) {
+            existingMap.set(newItem.id, newItem);
+            updatedCount++;
+          } else {
+            addedCount++;
+          }
+        }
+
+        // 合并后的列表：新加入的放在前面，然后是更新过的原有顺序
+        const newIds = new Set(newData.items.map(i => i.id));
+        const mergedNewItems = newData.items.filter(i => !current.items.some(old => old.id === i.id));
+        const mergedOldItems = current.items.map(old => existingMap.get(old.id) || old);
+        const mergedItems = [...mergedNewItems, ...mergedOldItems];
+
+        const mergedData = {
+          items: mergedItems,
+          version: newData.version || current.version || '1.0'
+        };
+
+        if (!this.saveAll(mergedData)) {
+          return { valid: false, error: '保存失败：存储空间不足' };
+        }
+        return { valid: true, imported: addedCount + updatedCount, added: addedCount, updated: updatedCount, mode: 'merge' };
+      }
+
+      return { valid: false, error: '未知的导入模式' };
     }
   };
 
@@ -1187,20 +1387,30 @@ mark {
         title.textContent = '物品位置记录';
         backBtn.classList.add('hidden');
         searchBtn.classList.remove('hidden');
+        document.getElementById('btn-settings').classList.remove('hidden');
         fab.classList.remove('hidden');
         View.renderList(view);
       } else if (hash === '#/add') {
         title.textContent = '添加物品';
         backBtn.classList.remove('hidden');
         searchBtn.classList.add('hidden');
+        document.getElementById('btn-settings').classList.add('hidden');
         fab.classList.add('hidden');
         View.renderAdd(view);
       } else if (hash === '#/search') {
         title.textContent = '搜索物品';
         backBtn.classList.remove('hidden');
         searchBtn.classList.add('hidden');
+        document.getElementById('btn-settings').classList.add('hidden');
         fab.classList.add('hidden');
         View.renderSearch(view);
+      } else if (hash === '#/data-mgmt') {
+        title.textContent = '数据管理';
+        backBtn.classList.remove('hidden');
+        searchBtn.classList.add('hidden');
+        document.getElementById('btn-settings').classList.add('hidden');
+        fab.classList.add('hidden');
+        View.renderDataMgmt(view);
       } else {
         // 先匹配带操作后缀的路由：#/detail/:id/update-location 或 #/detail/:id/edit
         const actionMatch = hash.match(/^#\/detail\/(.+?)\/(update-location|edit)$/);
@@ -1606,6 +1816,216 @@ mark {
       doSearch();
     },
 
+    /* ---- 数据管理 ---- */
+    renderDataMgmt(container) {
+      const data = Store.getAll();
+      const usage = Store.getStorageUsage();
+      const items = data.items || [];
+
+      // 统计位置记录总数
+      let locationCount = 0;
+      items.forEach(i => {
+        if (i.locationHistory) locationCount += i.locationHistory.length;
+      });
+
+      container.innerHTML = `
+        <div class="fade-in">
+          <div class="data-mgmt-card">
+            <div class="data-mgmt-card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+              数据概况
+            </div>
+            <div class="data-mgmt-info-row">
+              <span class="data-mgmt-info-label">物品总数</span>
+              <span class="data-mgmt-info-value">${items.length}</span>
+            </div>
+            <div class="data-mgmt-info-row">
+              <span class="data-mgmt-info-label">位置记录数</span>
+              <span class="data-mgmt-info-value">${locationCount}</span>
+            </div>
+            <div class="data-mgmt-info-row">
+              <span class="data-mgmt-info-label">有图片的物品</span>
+              <span class="data-mgmt-info-value">${items.filter(i => i.photo).length}</span>
+            </div>
+            <div class="data-mgmt-info-row">
+              <span class="data-mgmt-info-label">已用存储</span>
+              <span class="data-mgmt-info-value">${usage.usedKB} KB / 5 MB</span>
+            </div>
+            <div class="storage-bar">
+              <div class="storage-bar-fill" style="width: ${Math.min(usage.percent, 100)}%"></div>
+            </div>
+          </div>
+
+          <div class="data-mgmt-card">
+            <div class="data-mgmt-card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              导出备份
+            </div>
+            <div class="data-mgmt-desc">
+              将所有物品数据导出为 JSON 文件，保存到本地。可用于数据备份或迁移到其他设备。
+            </div>
+            <button class="btn btn-primary" id="btn-export">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              导出数据
+            </button>
+          </div>
+
+          <div class="data-mgmt-card">
+            <div class="data-mgmt-card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              导入恢复
+            </div>
+            <div class="data-mgmt-desc">
+              从之前导出的 JSON 备份文件中恢复数据。导入时可以选择「合并」或「完全替换」。
+            </div>
+            <button class="btn btn-outline" id="btn-import">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              选择文件导入
+            </button>
+          </div>
+
+          <div class="data-mgmt-card">
+            <div class="data-mgmt-card-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              危险操作
+            </div>
+            <div class="data-mgmt-desc">
+              清空所有物品数据，此操作不可撤销，建议先导出备份。
+            </div>
+            <button class="btn btn-danger" id="btn-clear-all">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              清空所有数据
+            </button>
+          </div>
+        </div>
+      `;
+
+      // 导出按钮
+      container.querySelector('#btn-export').addEventListener('click', () => {
+        const items = Store.getItems();
+        if (items.length === 0) {
+          UI.toast('没有数据可导出');
+          return;
+        }
+        try {
+          const filename = Store.downloadExportFile();
+          UI.toast(`已导出 ${items.length} 条记录`);
+        } catch (e) {
+          UI.toast('导出失败，请重试');
+          console.error('导出错误', e);
+        }
+      });
+
+      // 导入按钮
+      container.querySelector('#btn-import').addEventListener('click', () => {
+        document.getElementById('import-input').click();
+      });
+
+      // 清空按钮
+      container.querySelector('#btn-clear-all').addEventListener('click', async () => {
+        const items = Store.getItems();
+        if (items.length === 0) {
+          UI.toast('已经是空数据了');
+          return;
+        }
+        const ok = await UI.confirm('清空所有数据', `确定要删除全部 ${items.length} 个物品吗？此操作不可撤销！建议先导出备份。`);
+        if (ok) {
+          Store.saveAll({ items: [], version: '1.0' });
+          UI.toast('已清空所有数据');
+          View.renderDataMgmt(container);
+        }
+      });
+
+      // 设置导入文件选择事件
+      const importInput = document.getElementById('import-input');
+      importInput.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        e.target.value = '';
+
+        UI.showLoading();
+        try {
+          const text = await file.text();
+          // 先验证格式
+          const validation = Store.validateImportData(text);
+          if (!validation.valid) {
+            UI.hideLoading();
+            UI.toast(validation.error);
+            return;
+          }
+
+          const incomingCount = validation.data.items.length;
+          const currentCount = Store.getItems().length;
+          UI.hideLoading();
+
+          // 选择导入模式
+          const mode = await View._showImportModeDialog(incomingCount, currentCount);
+          if (!mode) return;
+
+          UI.showLoading();
+          const result = Store.importData(text, mode);
+          UI.hideLoading();
+
+          if (!result.valid) {
+            UI.toast(result.error);
+            return;
+          }
+
+          if (mode === 'replace') {
+            UI.toast(`已导入 ${result.imported} 条记录（替换模式）`);
+          } else {
+            UI.toast(`合并完成：新增 ${result.added} 条，更新 ${result.updated} 条`);
+          }
+
+          // 刷新数据管理页
+          View.renderDataMgmt(container);
+        } catch (err) {
+          UI.hideLoading();
+          UI.toast('导入失败：' + (err.message || '未知错误'));
+          console.error('导入错误', err);
+        }
+      };
+    },
+
+    /* ---- 导入模式选择弹窗 ---- */
+    _showImportModeDialog(incomingCount, currentCount) {
+      return new Promise(resolve => {
+        const overlay = document.createElement('div');
+        overlay.className = 'modal-overlay';
+        overlay.innerHTML = `
+          <div class="modal" style="max-width:340px;">
+            <div class="modal-title">选择导入方式</div>
+            <div class="modal-body">
+              备份文件包含 <strong>${incomingCount}</strong> 条物品记录。<br>
+              当前设备有 <strong>${currentCount}</strong> 条记录。
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <button class="btn btn-primary" data-action="merge" style="flex:none;">
+                合并导入
+                <div style="font-size:12px;font-weight:400;opacity:0.9;">保留现有数据，新增和更新记录</div>
+              </button>
+              <button class="btn btn-outline" data-action="replace" style="flex:none;color:var(--danger);border-color:var(--danger);">
+                完全替换
+                <div style="font-size:12px;font-weight:400;opacity:0.8;">删除现有数据，用备份替换</div>
+              </button>
+              <button class="btn btn-outline" data-action="cancel" style="flex:none;">取消</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+        requestAnimationFrame(() => overlay.classList.add('show'));
+
+        overlay.addEventListener('click', e => {
+          const action = e.target.closest('[data-action]')?.dataset.action;
+          if (action) {
+            overlay.classList.remove('show');
+            setTimeout(() => overlay.remove(), 200);
+            resolve(action === 'cancel' ? null : action);
+          }
+        });
+      });
+    },
+
     /* ---- 图片处理辅助 ---- */
     _setupPhotoHandlers(container, mode) {
       const cameraInput = document.getElementById('camera-input');
@@ -1732,6 +2152,10 @@ mark {
 
     document.getElementById('btn-search').addEventListener('click', () => {
       Router.navigate('#/search');
+    });
+
+    document.getElementById('btn-settings').addEventListener('click', () => {
+      Router.navigate('#/data-mgmt');
     });
 
     document.getElementById('fab-add').addEventListener('click', () => {
