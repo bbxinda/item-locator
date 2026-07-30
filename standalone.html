@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+  <!-- PWA 核心配置 -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- iOS PWA 支持 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="物品记录">
+  <link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAEV0lEQVR4nO3d3XHbRhiGUTqTWuJenGLsUpxi4l7sZpwLJzMMByQW2D/w3XMuJY0IYR9+WoDi6HYDAAAAAACgyIfZB1Dq09fvP2cfw+q+ffl4+V4ue4ACvr4rBn6pAxLx+7pK3NMPQsR5ZsY97YGFnG9G2L+NfsDbTcyrmLHOQ59BQl7XqGk9bEKLeW2j1r/7s0bIPOo5rbtOaDGzpWcX3YIWM6/06qNL0GKmRI9OmgctZo5o3UvToMXMGS27aRa0mKnRqp8mQYuZFlp0NOWlb+ilOmjTmZZqe6oKWsz0UNOVLQdRTgdtOtPT2b5OBS1mRjjTmS0HUQ4HbToz0tHefu91INxuf3/+4+nn/vzrx8AjWYegO3gV8uPXCLutQ1sO2419JTHXfP2KjnTnorChs3GKuh1BN1IbpajbKA7aduO5VjGK+rnS/lwUDnB/4Sfavmw5Ku3dmnu8i7H1sdLvxz5BE6UoaPvn4/buL7v/fFxJhyY0UQRNFEF3sndx5+KvD0ETRdCV9m7BPU7irY+Vfj/2eWFlANuLcUzoBlpNVdO5nqAbqY1RzG0IuhF/bXcN9tCVWoboXSz1TOgKvaaqaX2eCX3CiOBM63NM6INGT8+9+9b8n6ALzQ5L1GVsOXZcKSTbkH0m9AtXivne7N8WVyboDe8SzDsc42iCfvBukbzLk28Ue+h/vXsU9te/LD+h0yZc0s9yxtJBpy5+2pP0iCW3HKss9orbkOUm9Cox31vpZ15mQq+0qFtWmdbxE3rl/eSW9HMRHXT64p2V/CSP3HKkLlZriduQuAkt5uOSzlnMhE5alBlSpnVM0FsLIfLX3j3eLXFbjv+IeV/iOYoMOnGhekk7V5FBsy5BE0XQRBE0UQRNFEETRdBEETRRBE0UQRNF0EQRNFEETRRBE0XQRIl5x0qpxHdplEj7u+dnTGiiLDehV5lUqzKhiSJoogiaKIImiqCJImiiCJoogiaKoIkiaKIImiiCJoqgiSJoogiaKIImiqCJImiiCJoogiaKoIkiaKIImiiCJoqgiSJoogiaKIImiqCJImiiCJoogiaKoIkSGfSq/0fljLRzFRn07Za3UD0knqPYoG+3zAVrJfXcxP/ToNSFY1v0hGY9giaKoIkiaKIImiiCJoqgiSJoogiaKEVBf/vy8UPvA4E9JR2a0EQRNFEETZTioO2jmam0PxOaKIImyqGgbTuY4Uh3JjRRBE2Uw0HbdjDS0d5MaKKcCtqUZoQznZ2e0KKmp7N92XIQpSpoU5oearqqntCipqXanmw5iNIkaFOaFlp01GxCi5oarfppuuUQNWe07Kb5HlrUHNG6ly4XhaKmRI9Out3lEDWv9Oqj6207UbOlZxfDgvv09fvPUY/FNY0YcMNeWDGt1zZq/adEZlqvY/Qgm/LSt2m9hhnrPD0s0zrPzIE1Peh74n5fV/mte4mD2CLu67tKxPcud0DPCHy+KwYMAAAAAAAj/QPMFVu1ZR0f7QAAAABJRU5ErkJggg==">
+
+  <!-- 主题色 + 图标 -->
+  <meta name="theme-color" content="#4A90D9">
+  <!-- favicon: 内联或通过 HTTP 服务器提供 -->
+
+  <title>物品位置记录</title>
+  <style>
+/* ============================================
+   物品位置记录 App - 样式表
+   ============================================ */
+
+/* CSS 变量 - 主题 */
+:root {
+  --primary: #4A90D9;
+  --primary-dark: #357ABD;
+  --primary-light: #E8F2FC;
+  --bg: #f5f6f8;
+  --card-bg: #ffffff;
+  --text: #1a1a1a;
+  --text-secondary: #8a8a8e;
+  --text-tertiary: #b0b0b5;
+  --border: #e5e5ea;
+  --border-light: #f0f0f3;
+  --danger: #e74c3c;
+  --danger-light: #fdf0ef;
+  --success: #34c759;
+  --warning: #ff9500;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.1);
+  --radius: 14px;
+  --radius-sm: 10px;
+  --header-h: 52px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* 重置 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  overscroll-behavior-y: none;
+}
+
+/* App 容器 */
+#app {
+  max-width: 600px;
+  margin: 0 auto;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--bg);
+  position: relative;
+}
+
+/* ============================================
+   顶部导航栏
+   ============================================ */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--primary);
+  color: #fff;
+  height: calc(var(--header-h) + var(--safe-top));
+  padding-top: var(--safe-top);
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+  padding-right: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+
+.header-title {
+  flex: 1;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  padding: 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+  transition: background 0.15s;
+}
+
+.header-btn:active {
+  background: rgba(255,255,255,0.2);
+}
+
+.header-btn.hidden {
+  visibility: hidden;
+}
+
+/* ============================================
+   主内容区域
+   ============================================ */
+#view-container {
+  padding: 16px;
+  padding-bottom: calc(100px + var(--safe-bottom));
+  min-height: calc(100vh - var(--header-h) - var(--safe-top));
+  min-height: calc(100dvh - var(--header-h) - var(--safe-top));
+}
+
+/* ============================================
+   悬浮添加按钮 (FAB)
+   ============================================ */
+.fab {
+  position: fixed;
+  bottom: calc(24px + var(--safe-bottom));
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(74, 144, 217, 0.45);
+  z-index: 50;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.fab:active {
+  transform: scale(0.92);
+  box-shadow: 0 2px 8px rgba(74, 144, 217, 0.4);
+}
+
+.fab.hidden {
+  display: none;
+}
+
+/* ============================================
+   物品卡片列表
+   ============================================ */
+.item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.15s;
+  border: 1px solid var(--border-light);
+}
+
+.item-card:active {
+  transform: scale(0.98);
+  box-shadow: var(--shadow-lg);
+}
+
+.item-card-thumb {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  background: var(--border-light);
+  flex-shrink: 0;
+}
+
+.item-card-thumb-placeholder {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-sm);
+  background: var(--primary-light);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+}
+
+.item-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.item-card-name {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-card-location {
+  font-size: 13px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.item-card-location svg {
+  flex-shrink: 0;
+}
+
+.item-card-time {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+/* ============================================
+   空状态
+   ============================================ */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--text-tertiary);
+}
+
+.empty-state-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  color: var(--primary);
+}
+
+.empty-state-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.empty-state-desc {
+  font-size: 14px;
+  color: var(--text-tertiary);
+}
+
+/* ============================================
+   表单
+   ============================================ */
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.form-label .required {
+  color: var(--danger);
+  margin-left: 2px;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-family: inherit;
+  background: var(--card-bg);
+  color: var(--text);
+  transition: border-color 0.15s;
+  -webkit-appearance: none;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.form-textarea {
+  resize: none;
+  min-height: 80px;
+}
+
+.form-hint {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-top: 6px;
+}
+
+/* ============================================
+   图片选择区域
+   ============================================ */
+.photo-section {
+  margin-bottom: 18px;
+}
+
+.photo-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.photo-btn {
+  flex: 1;
+  padding: 14px;
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card-bg);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s;
+}
+
+.photo-btn:active {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.photo-btn svg {
+  color: var(--primary);
+}
+
+.photo-preview {
+  position: relative;
+  margin-top: 12px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.photo-preview img {
+  width: 100%;
+  display: block;
+  max-height: 300px;
+  object-fit: cover;
+}
+
+.photo-preview-remove {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.6);
+  border: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* ============================================
+   按钮
+   ============================================ */
+.btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn-primary:active {
+  background: var(--primary-dark);
+}
+
+.btn-danger {
+  background: var(--danger-light);
+  color: var(--danger);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1.5px solid var(--border);
+  color: var(--text);
+}
+
+.btn-block {
+  margin-bottom: 10px;
+}
+
+/* ============================================
+   物品详情
+   ============================================ */
+.detail-photo {
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+
+.detail-photo-placeholder {
+  width: 100%;
+  height: 180px;
+  border-radius: var(--radius);
+  background: var(--primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  color: var(--primary);
+}
+
+.detail-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-light);
+}
+
+.detail-name {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.detail-description {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.current-location-box {
+  background: var(--primary-light);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  margin-top: 8px;
+}
+
+.current-location-label {
+  font-size: 12px;
+  color: var(--primary);
+  font-weight: 600;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.current-location-value {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.current-location-time {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.detail-section-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ============================================
+   位置变更时间线
+   ============================================ */
+.timeline {
+  position: relative;
+  padding-left: 28px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background: var(--border);
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -21px;
+  top: 4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--border);
+  border: 3px solid var(--card-bg);
+  box-sizing: content-box;
+  margin-left: -3px;
+}
+
+.timeline-item.current .timeline-dot {
+  background: var(--primary);
+  box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.2);
+}
+
+.timeline-location {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.timeline-item.current .timeline-location {
+  color: var(--primary);
+}
+
+.timeline-time {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+.timeline-note {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  padding: 6px 10px;
+  background: var(--border-light);
+  border-radius: 8px;
+}
+
+/* ============================================
+   搜索页
+   ============================================ */
+.search-box {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 40px 12px 40px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  background: var(--card-bg);
+  -webkit-appearance: none;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.search-icon-left {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-tertiary);
+  pointer-events: none;
+}
+
+.search-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: var(--border-light);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-clear.visible {
+  display: flex;
+}
+
+mark {
+  background: #fff3cd;
+  color: inherit;
+  padding: 0 2px;
+  border-radius: 3px;
+}
+
+/* ============================================
+   Toast 提示
+   ============================================ */
+.toast {
+  position: fixed;
+  bottom: calc(100px + var(--safe-bottom));
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s;
+  white-space: nowrap;
+  max-width: 90%;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ============================================
+   确认弹窗
+   ============================================ */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.modal-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin: 0 40px;
+  max-width: 320px;
+  width: 100%;
+  transform: scale(0.9);
+  transition: transform 0.2s;
+}
+
+.modal-overlay.show .modal {
+  transform: scale(1);
+}
+
+.modal-title {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.modal-body {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.modal-buttons .btn {
+  flex: 1;
+}
+
+/* ============================================
+   加载指示器
+   ============================================ */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255,255,255,0.7);
+  z-index: 250;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-overlay.show {
+  display: flex;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   统计信息
+   ============================================ */
+.stats-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.stat-chip {
+  flex: 1;
+  background: var(--card-bg);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  text-align: center;
+  border: 1px solid var(--border-light);
+}
+
+.stat-chip-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.stat-chip-label {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+/* ============================================
+   动画
+   ============================================ */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* ============================================
+   响应式 - 大屏适配
+   ============================================ */
+@media (min-width: 601px) {
+  #app {
+    box-shadow: 0 0 40px rgba(0,0,0,0.06);
+  }
+}
+
+</style>
+</head>
+<body>
+  <div id="app">
+    <!-- 顶部导航栏 -->
+    <header class="app-header" id="app-header">
+      <button class="header-btn header-back" id="btn-back" aria-label="返回">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <h1 class="header-title" id="header-title">物品位置记录</h1>
+      <button class="header-btn header-search" id="btn-search" aria-label="搜索">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </button>
+    </header>
+
+    <!-- 主内容区域 -->
+    <main id="view-container"></main>
+
+    <!-- 悬浮添加按钮 -->
+    <button class="fab" id="fab-add" aria-label="添加物品">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    </button>
+  </div>
+
+  <!-- 隐藏的文件输入（拍照/相册） -->
+  <input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none">
+  <input type="file" id="gallery-input" accept="image/*" style="display:none">
+
+  <!-- Toast 提示 -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+/* ============================================
+   物品位置记录 App - 主逻辑
+   ============================================ */
+
+(function() {
+  'use strict';
+
+  /* ========================================
+     工具函数
+     ======================================== */
+  const Utils = {
+    escapeHtml(str) {
+      if (!str) return '';
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    },
+
+    escapeRegex(str) {
+      return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    },
+
+    formatDateTime(timestamp) {
+      const d = new Date(timestamp);
+      const now = new Date();
+      const diff = now - timestamp;
+      if (diff < 60000) return '刚刚';
+      if (diff < 3600000) return Math.floor(diff / 60000) + '分钟前';
+      if (diff < 86400000) return Math.floor(diff / 3600000) + '小时前';
+      if (diff < 7 * 86400000) return Math.floor(diff / 86400000) + '天前';
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const hours = String(d.getHours()).padStart(2, '0');
+      const mins = String(d.getMinutes()).padStart(2, '0');
+      return `${d.getFullYear()}-${month}-${day} ${hours}:${mins}`;
+    },
+
+    formatFullDateTime(timestamp) {
+      const d = new Date(timestamp);
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const hours = String(d.getHours()).padStart(2, '0');
+      const mins = String(d.getMinutes()).padStart(2, '0');
+      return `${d.getFullYear()}-${month}-${day} ${hours}:${mins}`;
+    },
+
+    genId() {
+      return `${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+    },
+
+    highlightKeyword(text, keyword) {
+      const escaped = Utils.escapeHtml(text);
+      if (!keyword) return escaped;
+      const regex = new RegExp(`(${Utils.escapeRegex(keyword)})`, 'gi');
+      return escaped.replace(regex, '<mark>$1</mark>');
+    }
+  };
+
+  /* ========================================
+     Toast / Loading / Modal
+     ======================================== */
+  const UI = {
+    toastTimer: null,
+
+    toast(message, duration = 2200) {
+      const el = document.getElementById('toast');
+      el.textContent = message;
+      el.classList.add('show');
+      clearTimeout(this.toastTimer);
+      this.toastTimer = setTimeout(() => el.classList.remove('show'), duration);
+    },
+
+    showLoading() {
+      let overlay = document.querySelector('.loading-overlay');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'loading-overlay';
+        overlay.innerHTML = '<div class="spinner"></div>';
+        document.body.appendChild(overlay);
+      }
+      overlay.classList.add('show');
+    },
+
+    hideLoading() {
+      const overlay = document.querySelector('.loading-overlay');
+      if (overlay) overlay.classList.remove('show');
+    },
+
+    confirm(title, body) {
+      return new Promise(resolve => {
+        const overlay = document.createElement('div');
+        overlay.className = 'modal-overlay';
+        overlay.innerHTML = `
+          <div class="modal">
+            <div class="modal-title">${Utils.escapeHtml(title)}</div>
+            <div class="modal-body">${Utils.escapeHtml(body)}</div>
+            <div class="modal-buttons">
+              <button class="btn btn-outline" data-action="cancel">取消</button>
+              <button class="btn btn-primary" data-action="ok">确认</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+        requestAnimationFrame(() => overlay.classList.add('show'));
+
+        overlay.addEventListener('click', e => {
+          const action = e.target.dataset.action;
+          if (action === 'ok') {
+            overlay.classList.remove('show');
+            setTimeout(() => overlay.remove(), 200);
+            resolve(true);
+          } else if (action === 'cancel' || e.target === overlay) {
+            overlay.classList.remove('show');
+            setTimeout(() => overlay.remove(), 200);
+            resolve(false);
+          }
+        });
+      });
+    }
+  };
+
+  /* ========================================
+     数据存储层
+     ======================================== */
+  const Store = {
+    STORAGE_KEY: 'itemLocator_data',
+
+    getAll() {
+      try {
+        const raw = localStorage.getItem(this.STORAGE_KEY);
+        if (!raw) return { items: [], version: '1.0' };
+        return JSON.parse(raw);
+      } catch (e) {
+        console.error('数据读取失败', e);
+        return { items: [], version: '1.0' };
+      }
+    },
+
+    saveAll(data) {
+      try {
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
+        return true;
+      } catch (e) {
+        if (e.name === 'QuotaExceededError') {
+          UI.toast('存储空间不足，请删除一些物品');
+        }
+        return false;
+      }
+    },
+
+    getItems() {
+      return this.getAll().items;
+    },
+
+    getById(id) {
+      return this.getAll().items.find(i => i.id === id);
+    },
+
+    add(item) {
+      const data = this.getAll();
+      data.items.unshift(item);
+      return this.saveAll(data);
+    },
+
+    update(id, updates) {
+      const data = this.getAll();
+      const item = data.items.find(i => i.id === id);
+      if (!item) return false;
+      Object.assign(item, updates);
+      item.updatedAt = Date.now();
+      return this.saveAll(data);
+    },
+
+    addLocationRecord(id, location, note) {
+      const data = this.getAll();
+      const item = data.items.find(i => i.id === id);
+      if (!item) return false;
+      const now = Date.now();
+      item.locationHistory.unshift({
+        location: location.trim(),
+        timestamp: now,
+        note: (note || '').trim()
+      });
+      item.updatedAt = now;
+      return this.saveAll(data);
+    },
+
+    delete(id) {
+      const data = this.getAll();
+      data.items = data.items.filter(i => i.id !== id);
+      return this.saveAll(data);
+    },
+
+    search(keyword) {
+      if (!keyword || !keyword.trim()) return [];
+      const kw = keyword.trim().toLowerCase();
+      return this.getAll().items.filter(item => {
+        if (item.name.toLowerCase().includes(kw)) return true;
+        if (item.description && item.description.toLowerCase().includes(kw)) return true;
+        return item.locationHistory.some(r => r.location.toLowerCase().includes(kw));
+      });
+    },
+
+    getStorageUsage() {
+      const data = localStorage.getItem(this.STORAGE_KEY) || '';
+      const bytes = new Blob([data]).size;
+      return {
+        usedKB: Math.round(bytes / 1024),
+        percent: Math.round((bytes / (5 * 1024 * 1024)) * 100)
+      };
+    }
+  };
+
+  /* ========================================
+     图片处理
+     ======================================== */
+  const ImageProcessor = {
+    MAX_WIDTH: 800,
+    MAX_HEIGHT: 800,
+    TARGET_SIZE: 100 * 1024,
+    MIN_QUALITY: 0.3,
+
+    async compress(file) {
+      const dataUrl = await this.fileToDataUrl(file);
+      const img = await this.loadImage(dataUrl);
+      const { width, height } = this.calculateSize(img.width, img.height, this.MAX_WIDTH, this.MAX_HEIGHT);
+      let quality = 0.7;
+      let result = await this.compressToCanvas(img, width, height, quality);
+      while (result.length > this.TARGET_SIZE && quality > this.MIN_QUALITY) {
+        quality -= 0.1;
+        result = await this.compressToCanvas(img, width, height, quality);
+      }
+      return result;
+    },
+
+    fileToDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => resolve(e.target.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    },
+
+    loadImage(src) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+      });
+    },
+
+    calculateSize(origW, origH, maxW, maxH) {
+      let width = origW, height = origH;
+      if (width > maxW) {
+        height = (height * maxW) / width;
+        width = maxW;
+      }
+      if (height > maxH) {
+        width = (width * maxH) / height;
+        height = maxH;
+      }
+      return { width: Math.round(width), height: Math.round(height) };
+    },
+
+    compressToCanvas(img, width, height, quality) {
+      return new Promise(resolve => {
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      });
+    }
+  };
+
+  /* ========================================
+     当前状态
+     ======================================== */
+  const State = {
+    currentPhoto: null,
+    editingPhoto: null
+  };
+
+  /* ========================================
+     路由
+     ======================================== */
+  const Router = {
+    init() {
+      window.addEventListener('hashchange', () => this.handleRoute());
+      this.handleRoute();
+    },
+
+    navigate(hash) {
+      window.location.hash = hash;
+    },
+
+    handleRoute() {
+      const hash = window.location.hash || '#/';
+      const view = document.getElementById('view-container');
+      const fab = document.getElementById('fab-add');
+      const backBtn = document.getElementById('btn-back');
+      const searchBtn = document.getElementById('btn-search');
+      const title = document.getElementById('header-title');
+      window.scrollTo(0, 0);
+
+      if (hash === '#/' || hash === '') {
+        title.textContent = '物品位置记录';
+        backBtn.classList.add('hidden');
+        searchBtn.classList.remove('hidden');
+        fab.classList.remove('hidden');
+        View.renderList(view);
+      } else if (hash === '#/add') {
+        title.textContent = '添加物品';
+        backBtn.classList.remove('hidden');
+        searchBtn.classList.add('hidden');
+        fab.classList.add('hidden');
+        View.renderAdd(view);
+      } else if (hash === '#/search') {
+        title.textContent = '搜索物品';
+        backBtn.classList.remove('hidden');
+        searchBtn.classList.add('hidden');
+        fab.classList.add('hidden');
+        View.renderSearch(view);
+      } else {
+        // 先匹配带操作后缀的路由：#/detail/:id/update-location 或 #/detail/:id/edit
+        const actionMatch = hash.match(/^#\/detail\/(.+?)\/(update-location|edit)$/);
+        // 再匹配纯详情页：#/detail/:id
+        const detailMatch = hash.match(/^#\/detail\/(.+)$/);
+
+        if (actionMatch) {
+          const id = actionMatch[1];
+          const action = actionMatch[2];
+          const item = Store.getById(id);
+          if (!item) {
+            UI.toast('物品不存在');
+            Router.navigate('#/');
+            return;
+          }
+          if (action === 'update-location') {
+            title.textContent = '更新位置';
+            backBtn.classList.remove('hidden');
+            searchBtn.classList.add('hidden');
+            fab.classList.add('hidden');
+            View.renderUpdateLocation(view, item);
+          } else if (action === 'edit') {
+            title.textContent = '编辑物品';
+            backBtn.classList.remove('hidden');
+            searchBtn.classList.add('hidden');
+            fab.classList.add('hidden');
+            View.renderEdit(view, item);
+          }
+        } else if (detailMatch) {
+          const id = detailMatch[1];
+          const item = Store.getById(id);
+          if (!item) {
+            UI.toast('物品不存在');
+            Router.navigate('#/');
+            return;
+          }
+          title.textContent = '物品详情';
+          backBtn.classList.remove('hidden');
+          searchBtn.classList.add('hidden');
+          fab.classList.add('hidden');
+          View.renderDetail(view, item);
+        } else {
+          Router.navigate('#/');
+        }
+      }
+    }
+  };
+
+  /* ========================================
+     视图渲染
+     ======================================== */
+  const View = {
+
+    /* ---- 首页列表 ---- */
+    renderList(container) {
+      const items = Store.getItems();
+      const usage = Store.getStorageUsage();
+
+      if (items.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state fade-in">
+            <div class="empty-state-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+              </svg>
+            </div>
+            <div class="empty-state-title">还没有记录任何物品</div>
+            <div class="empty-state-desc">点击右下角 + 按钮，开始记录物品位置</div>
+          </div>
+        `;
+        return;
+      }
+
+      const locationIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
+      const placeholderIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`;
+
+      container.innerHTML = `
+        <div class="stats-bar fade-in">
+          <div class="stat-chip">
+            <div class="stat-chip-value">${items.length}</div>
+            <div class="stat-chip-label">物品总数</div>
+          </div>
+          <div class="stat-chip">
+            <div class="stat-chip-value">${items.filter(i => i.photo).length}</div>
+            <div class="stat-chip-label">有图片</div>
+          </div>
+          <div class="stat-chip">
+            <div class="stat-chip-value">${usage.usedKB}KB</div>
+            <div class="stat-chip-label">已用空间</div>
+          </div>
+        </div>
+        <div class="item-list fade-in">
+          ${items.map(item => {
+            const currentLoc = item.locationHistory[0];
+            return `
+              <div class="item-card" data-id="${item.id}">
+                ${item.photo
+                  ? `<img class="item-card-thumb" src="${item.photo}" alt="">`
+                  : `<div class="item-card-thumb-placeholder">${placeholderIcon}</div>`
+                }
+                <div class="item-card-info">
+                  <div class="item-card-name">${Utils.escapeHtml(item.name)}</div>
+                  <div class="item-card-location">${locationIcon}${Utils.escapeHtml(currentLoc ? currentLoc.location : '未知位置')}</div>
+                  <div class="item-card-time">${Utils.formatDateTime(item.updatedAt)}</div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+
+      container.querySelectorAll('.item-card').forEach(card => {
+        card.addEventListener('click', () => {
+          Router.navigate(`#/detail/${card.dataset.id}`);
+        });
+      });
+    },
+
+    /* ---- 添加物品 ---- */
+    renderAdd(container) {
+      State.currentPhoto = null;
+      const cameraIcon = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>`;
+      const galleryIcon = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`;
+
+      container.innerHTML = `
+        <div class="fade-in">
+          <div class="photo-section">
+            <div class="form-label">物品照片（可选）</div>
+            <div class="photo-buttons">
+              <button class="photo-btn" id="btn-camera">${cameraIcon}<span>拍照</span></button>
+              <button class="photo-btn" id="btn-gallery">${galleryIcon}<span>相册</span></button>
+            </div>
+            <div id="photo-preview-area"></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">物品名称<span class="required">*</span></label>
+            <input type="text" class="form-input" id="input-name" placeholder="如：护照、钥匙、充电器" maxlength="50">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">存放位置<span class="required">*</span></label>
+            <input type="text" class="form-input" id="input-location" placeholder="如：书房抽屉第二格" maxlength="100">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">位置备注（可选）</label>
+            <input type="text" class="form-input" id="input-note" placeholder="如：放在文件夹后面" maxlength="100">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">物品描述（可选）</label>
+            <textarea class="form-textarea" id="input-description" placeholder="物品的详细描述..." maxlength="500"></textarea>
+          </div>
+
+          <div class="form-hint" style="margin-bottom:16px;">
+            位置记录时间将自动设为当前：${Utils.formatFullDateTime(Date.now())}
+          </div>
+
+          <button class="btn btn-primary" id="btn-save">保存物品</button>
+        </div>
+      `;
+
+      this._setupPhotoHandlers(container, 'add');
+      this._setupSaveHandler(container, 'add');
+    },
+
+    /* ---- 编辑物品 ---- */
+    renderEdit(container, item) {
+      State.editingPhoto = item.photo;
+      const cameraIcon = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>`;
+      const galleryIcon = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`;
+
+      container.innerHTML = `
+        <div class="fade-in">
+          <div class="photo-section">
+            <div class="form-label">物品照片</div>
+            <div class="photo-buttons">
+              <button class="photo-btn" id="btn-camera">${cameraIcon}<span>拍照</span></button>
+              <button class="photo-btn" id="btn-gallery">${galleryIcon}<span>相册</span></button>
+            </div>
+            <div id="photo-preview-area"></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">物品名称<span class="required">*</span></label>
+            <input type="text" class="form-input" id="input-name" value="${Utils.escapeHtml(item.name)}" maxlength="50">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">物品描述（可选）</label>
+            <textarea class="form-textarea" id="input-description" maxlength="500">${Utils.escapeHtml(item.description || '')}</textarea>
+          </div>
+
+          <button class="btn btn-primary" id="btn-save">保存修改</button>
+        </div>
+      `;
+
+      // 显示已有照片
+      if (item.photo) {
+        this._showPhotoPreview(container, item.photo, 'edit');
+      }
+
+      this._setupPhotoHandlers(container, 'edit');
+      this._setupSaveHandler(container, 'edit', item.id);
+    },
+
+    /* ---- 物品详情 ---- */
+    renderDetail(container, item) {
+      const currentLoc = item.locationHistory[0];
+      const placeholderIcon = `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>`;
+
+      container.innerHTML = `
+        <div class="fade-in">
+          ${item.photo
+            ? `<img class="detail-photo" src="${item.photo}" alt="">`
+            : `<div class="detail-photo-placeholder">${placeholderIcon}</div>`
+          }
+
+          <div class="detail-card">
+            <div class="detail-name">${Utils.escapeHtml(item.name)}</div>
+            ${item.description ? `<div class="detail-description">${Utils.escapeHtml(item.description)}</div>` : ''}
+
+            <div class="current-location-box">
+              <div class="current-location-label">当前位置</div>
+              <div class="current-location-value">${Utils.escapeHtml(currentLoc ? currentLoc.location : '未知')}</div>
+              <div class="current-location-time">${currentLoc ? Utils.formatFullDateTime(currentLoc.timestamp) : ''}</div>
+            </div>
+          </div>
+
+          <div class="detail-card">
+            <div class="detail-section-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              位置变更历史
+            </div>
+            <div class="timeline">
+              ${item.locationHistory.map((record, index) => `
+                <div class="timeline-item ${index === 0 ? 'current' : ''}">
+                  <div class="timeline-dot"></div>
+                  <div class="timeline-location">${Utils.escapeHtml(record.location)}</div>
+                  <div class="timeline-time">${Utils.formatFullDateTime(record.timestamp)}</div>
+                  ${record.note ? `<div class="timeline-note">${Utils.escapeHtml(record.note)}</div>` : ''}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-block" id="btn-update-location">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            更新位置
+          </button>
+          <button class="btn btn-outline btn-block" id="btn-edit">编辑物品</button>
+          <button class="btn btn-danger btn-block" id="btn-delete">删除物品</button>
+        </div>
+      `;
+
+      container.querySelector('#btn-update-location').addEventListener('click', () => {
+        Router.navigate(`#/detail/${item.id}/update-location`);
+      });
+      container.querySelector('#btn-edit').addEventListener('click', () => {
+        Router.navigate(`#/detail/${item.id}/edit`);
+      });
+      container.querySelector('#btn-delete').addEventListener('click', async () => {
+        const ok = await UI.confirm('删除物品', `确定要删除"${item.name}"吗？此操作不可撤销。`);
+        if (ok) {
+          Store.delete(item.id);
+          UI.toast('已删除');
+          Router.navigate('#/');
+        }
+      });
+    },
+
+    /* ---- 更新位置 ---- */
+    renderUpdateLocation(container, item) {
+      const currentLoc = item.locationHistory[0];
+      container.innerHTML = `
+        <div class="fade-in">
+          <div class="detail-card">
+            <div class="detail-name" style="font-size:18px;">${Utils.escapeHtml(item.name)}</div>
+            <div class="current-location-box">
+              <div class="current-location-label">当前位置</div>
+              <div class="current-location-value">${Utils.escapeHtml(currentLoc ? currentLoc.location : '未知')}</div>
+              <div class="current-location-time">${currentLoc ? Utils.formatFullDateTime(currentLoc.timestamp) : ''}</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">新位置<span class="required">*</span></label>
+            <input type="text" class="form-input" id="input-new-location" placeholder="输入物品的新存放位置" maxlength="100">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">备注（可选）</label>
+            <input type="text" class="form-input" id="input-note" placeholder="如：搬到新位置的原因" maxlength="100">
+          </div>
+
+          <div class="form-hint" style="margin-bottom:16px;">
+            记录时间将自动设为当前：${Utils.formatFullDateTime(Date.now())}
+          </div>
+
+          <button class="btn btn-primary" id="btn-save-location">确认更新</button>
+        </div>
+      `;
+
+      container.querySelector('#btn-save-location').addEventListener('click', () => {
+        const newLoc = container.querySelector('#input-new-location').value.trim();
+        const note = container.querySelector('#input-note').value.trim();
+        if (!newLoc) {
+          UI.toast('请输入新位置');
+          return;
+        }
+        Store.addLocationRecord(item.id, newLoc, note);
+        UI.toast('位置已更新');
+        Router.navigate(`#/detail/${item.id}`);
+      });
+    },
+
+    /* ---- 搜索 ---- */
+    renderSearch(container) {
+      const searchIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`;
+      const clearIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
+      const placeholderIcon = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`;
+      const locationIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
+
+      container.innerHTML = `
+        <div class="fade-in">
+          <div class="search-box">
+            <span class="search-icon-left">${searchIcon}</span>
+            <input type="text" class="search-input" id="search-input" placeholder="输入物品名称、描述或位置..." autofocus>
+            <button class="search-clear" id="search-clear">${clearIcon}</button>
+          </div>
+          <div id="search-results"></div>
+        </div>
+      `;
+
+      const input = container.querySelector('#search-input');
+      const clearBtn = container.querySelector('#search-clear');
+      const results = container.querySelector('#search-results');
+
+      const doSearch = () => {
+        const kw = input.value.trim();
+        clearBtn.classList.toggle('visible', kw.length > 0);
+
+        if (!kw) {
+          results.innerHTML = `
+            <div class="empty-state" style="padding-top:40px;">
+              <div class="empty-state-desc">输入关键词搜索物品</div>
+            </div>
+          `;
+          return;
+        }
+
+        const items = Store.search(kw);
+        if (items.length === 0) {
+          results.innerHTML = `
+            <div class="empty-state" style="padding-top:40px;">
+              <div class="empty-state-title">未找到匹配的物品</div>
+              <div class="empty-state-desc">试试其他关键词</div>
+            </div>
+          `;
+          return;
+        }
+
+        results.innerHTML = `
+          <div class="item-list">
+            ${items.map(item => {
+              const currentLoc = item.locationHistory[0];
+              return `
+                <div class="item-card" data-id="${item.id}">
+                  ${item.photo
+                    ? `<img class="item-card-thumb" src="${item.photo}" alt="">`
+                    : `<div class="item-card-thumb-placeholder">${placeholderIcon}</div>`
+                  }
+                  <div class="item-card-info">
+                    <div class="item-card-name">${Utils.highlightKeyword(item.name, kw)}</div>
+                    <div class="item-card-location">${locationIcon}${Utils.highlightKeyword(currentLoc ? currentLoc.location : '', kw)}</div>
+                    <div class="item-card-time">${Utils.formatDateTime(item.updatedAt)}</div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+
+        results.querySelectorAll('.item-card').forEach(card => {
+          card.addEventListener('click', () => {
+            Router.navigate(`#/detail/${card.dataset.id}`);
+          });
+        });
+      };
+
+      input.addEventListener('input', doSearch);
+      clearBtn.addEventListener('click', () => {
+        input.value = '';
+        doSearch();
+        input.focus();
+      });
+
+      // 自动聚焦
+      setTimeout(() => input.focus(), 100);
+      doSearch();
+    },
+
+    /* ---- 图片处理辅助 ---- */
+    _setupPhotoHandlers(container, mode) {
+      const cameraInput = document.getElementById('camera-input');
+      const galleryInput = document.getElementById('gallery-input');
+
+      const btnCamera = container.querySelector('#btn-camera');
+      const btnGallery = container.querySelector('#btn-gallery');
+
+      if (btnCamera) {
+        btnCamera.addEventListener('click', () => cameraInput.click());
+      }
+      if (btnGallery) {
+        btnGallery.addEventListener('click', () => galleryInput.click());
+      }
+
+      const handler = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        e.target.value = '';
+
+        UI.showLoading();
+        try {
+          const compressed = await ImageProcessor.compress(file);
+          if (mode === 'edit') {
+            State.editingPhoto = compressed;
+          } else {
+            State.currentPhoto = compressed;
+          }
+          View._showPhotoPreview(container, compressed, mode);
+        } catch (err) {
+          UI.toast('图片处理失败，请重试');
+        }
+        UI.hideLoading();
+      };
+
+      cameraInput.onchange = handler;
+      galleryInput.onchange = handler;
+    },
+
+    _showPhotoPreview(container, photoData, mode) {
+      const area = container.querySelector('#photo-preview-area');
+      area.innerHTML = `
+        <div class="photo-preview">
+          <img src="${photoData}" alt="预览">
+          <button class="photo-preview-remove" data-mode="${mode}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+      `;
+      area.querySelector('.photo-preview-remove').addEventListener('click', () => {
+        area.innerHTML = '';
+        if (mode === 'edit') {
+          State.editingPhoto = null;
+        } else {
+          State.currentPhoto = null;
+        }
+      });
+    },
+
+    _setupSaveHandler(container, mode, editId) {
+      const saveBtn = container.querySelector('#btn-save');
+
+      saveBtn.addEventListener('click', () => {
+        const name = container.querySelector('#input-name').value.trim();
+        const description = container.querySelector('#input-description') ? container.querySelector('#input-description').value.trim() : '';
+
+        if (!name) {
+          UI.toast('请输入物品名称');
+          return;
+        }
+
+        if (mode === 'add') {
+          const location = container.querySelector('#input-location').value.trim();
+          const note = container.querySelector('#input-note').value.trim();
+          if (!location) {
+            UI.toast('请输入存放位置');
+            return;
+          }
+
+          const now = Date.now();
+          const item = {
+            id: Utils.genId(),
+            name,
+            description,
+            photo: State.currentPhoto || null,
+            createdAt: now,
+            updatedAt: now,
+            locationHistory: [{
+              location,
+              timestamp: now,
+              note
+            }]
+          };
+          Store.add(item);
+          State.currentPhoto = null;
+          UI.toast('物品已添加');
+          Router.navigate('#/');
+
+        } else if (mode === 'edit') {
+          Store.update(editId, {
+            name,
+            description,
+            photo: State.editingPhoto || null
+          });
+          State.editingPhoto = null;
+          UI.toast('已保存修改');
+          Router.navigate(`#/detail/${editId}`);
+        }
+      });
+    }
+  };
+
+  /* ========================================
+     顶部按钮事件
+     ======================================== */
+  function setupHeaderButtons() {
+    document.getElementById('btn-back').addEventListener('click', () => {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        Router.navigate('#/');
+      }
+    });
+
+    document.getElementById('btn-search').addEventListener('click', () => {
+      Router.navigate('#/search');
+    });
+
+    document.getElementById('fab-add').addEventListener('click', () => {
+      Router.navigate('#/add');
+    });
+  }
+
+  /* ========================================
+     Service Worker 注册
+     ======================================== */
+  function registerServiceWorker() {
+    // file:// 协议下不支持 Service Worker，跳过
+    if (window.location.protocol === 'file:') return;
+    if (!('serviceWorker' in navigator)) return;
+    try {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('SW 注册成功', reg.scope))
+          .catch(err => console.warn('SW 注册失败', err));
+      });
+    } catch (e) {
+      console.warn('SW 注册异常', e);
+    }
+  }
+
+  /* ========================================
+     初始化
+     ======================================== */
+  function init() {
+    setupHeaderButtons();
+    Router.init();
+    registerServiceWorker();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+})();
+
+</script>
+</body>
+</html>
