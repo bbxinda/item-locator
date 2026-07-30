@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+  <!-- PWA 核心配置 -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- iOS PWA 支持 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="物品记录">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+
+  <!-- 主题色 + 图标 -->
+  <meta name="theme-color" content="#4A90D9">
+  <link rel="icon" href="icons/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="icons/favicon.ico" type="image/x-icon">
+
+  <title>物品位置记录</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <!-- 顶部导航栏 -->
+    <header class="app-header" id="app-header">
+      <button class="header-btn header-back" id="btn-back" aria-label="返回">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <h1 class="header-title" id="header-title">物品位置记录</h1>
+      <button class="header-btn header-search" id="btn-search" aria-label="搜索">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </button>
+    </header>
+
+    <!-- 主内容区域 -->
+    <main id="view-container"></main>
+
+    <!-- 悬浮添加按钮 -->
+    <button class="fab" id="fab-add" aria-label="添加物品">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    </button>
+  </div>
+
+  <!-- 隐藏的文件输入（拍照/相册） -->
+  <input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none">
+  <input type="file" id="gallery-input" accept="image/*" style="display:none">
+
+  <!-- Toast 提示 -->
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
