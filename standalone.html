@@ -1405,19 +1405,42 @@ mark {
     async downloadExportFile() {
       const jsonStr = await this.exportData();
       const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
       const now = new Date();
       const ts = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
       const filename = `物品记录备份_${ts}.json`;
 
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 100);
-      return filename;
+      // iOS Safari 不支持 blob URL 下载，优先使用分享 API
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], filename, { type: 'application/json' })] })) {
+        try {
+          await navigator.share({
+            files: [new File([blob], filename, { type: 'application/json' })],
+            title: '物品记录备份'
+          });
+          return filename;
+        } catch (e) {
+          // 用户取消分享，不算失败
+          if (e.name === 'AbortError') return null;
+        }
+      }
+
+      // 回退方案：用 data URL 触发下载
+      const reader = new FileReader();
+      return new Promise((resolve) => {
+        reader.onload = () => {
+          const a = document.createElement('a');
+          a.href = reader.result;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => {
+            // 清理：把 data URL 置空释放内存
+            a.href = '';
+          }, 100);
+          resolve(filename);
+        };
+        reader.readAsDataURL(blob);
+      });
     },
 
     /* ---- 数据导入 ---- */
@@ -2437,7 +2460,7 @@ mark {
   /* ========================================
      自动版本检测与更新
      ======================================== */
-  const APP_VERSION = '20260731-2';
+  const APP_VERSION = '20260731-3';
 
   async function checkForUpdate() {
     try {
