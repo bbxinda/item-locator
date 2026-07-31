@@ -2,7 +2,7 @@
    Service Worker - 离线缓存
    ============================================ */
 
-const CACHE_NAME = 'item-locator-v4';
+const CACHE_NAME = 'item-locator-v5';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
