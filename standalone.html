@@ -1208,17 +1208,20 @@ mark {
   /* ========================================
      数据迁移：localStorage 照片 → IndexedDB
      ======================================== */
-  const MIGRATION_KEY = 'itemLocator_photos_migrated_v2';
 
   function isPhotoReference(value) {
     return typeof value === 'string' && value.length > 0 && !value.startsWith('data:');
   }
 
   async function migratePhotosToIndexedDB() {
-    if (localStorage.getItem(MIGRATION_KEY)) return;
+    // v3 迁移标记：修复之前数据为空时也设标记的bug
+    const MIGRATION_KEY_V3 = 'itemLocator_photos_migrated_v3';
+    if (localStorage.getItem(MIGRATION_KEY_V3)) return;
+
     try {
       const raw = localStorage.getItem(Store.STORAGE_KEY);
-      if (!raw) { localStorage.setItem(MIGRATION_KEY, '1'); return; }
+      if (!raw) return; // 无数据，不设标记，等有数据时再试
+
       const data = JSON.parse(raw);
       const items = data.items || [];
       let migratedCount = 0;
@@ -1239,7 +1242,7 @@ mark {
         localStorage.setItem(Store.STORAGE_KEY, JSON.stringify(data));
         console.log(`照片迁移完成：${migratedCount} 张照片移至 IndexedDB`);
       }
-      localStorage.setItem(MIGRATION_KEY, '1');
+      localStorage.setItem(MIGRATION_KEY_V3, '1');
     } catch (e) {
       console.error('照片迁移出错', e);
     }
