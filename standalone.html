@@ -2405,7 +2405,6 @@ mark {
      Service Worker 注册
      ======================================== */
   function registerServiceWorker() {
-    // file:// 协议下不支持 Service Worker，跳过
     if (window.location.protocol === 'file:') return;
     if (!('serviceWorker' in navigator)) return;
     try {
@@ -2413,7 +2412,6 @@ mark {
         navigator.serviceWorker.register('./sw.js')
           .then(reg => {
             console.log('SW 注册成功', reg.scope);
-            // 检测到新 SW 就绪后自动刷新页面，让用户立即用上最新版本
             reg.addEventListener('updatefound', () => {
               const newWorker = reg.installing;
               if (newWorker) {
@@ -2427,13 +2425,47 @@ mark {
           })
           .catch(err => console.warn('SW 注册失败', err));
 
-        // 如果已有 SW 被控制，且检测到新的 SW 已激活，也刷新
         navigator.serviceWorker.addEventListener('controllerchange', () => {
           window.location.reload();
         });
       });
     } catch (e) {
       console.warn('SW 注册异常', e);
+    }
+  }
+
+  /* ========================================
+     自动版本检测与更新
+     ======================================== */
+  const APP_VERSION = '20260731-2';
+
+  async function checkForUpdate() {
+    try {
+      // 从 GitHub Pages 获取最新版本的 standalone.html，提取版本号
+      const resp = await fetch('./standalone.html?_t=' + Date.now(), { cache: 'no-store' });
+      if (!resp.ok) return;
+      const text = await resp.text();
+      // 提取 APP_VERSION
+      const match = text.match(/APP_VERSION\s*=\s*['"](\d{8}-\d+)['"]/);
+      if (!match) return;
+      const latestVersion = match[1];
+      if (latestVersion !== APP_VERSION) {
+        console.log(`发现新版本: ${latestVersion} (当前: ${APP_VERSION})，正在更新...`);
+        // 强制更新 Service Worker
+        if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+          const reg = await navigator.serviceWorker.getRegistration();
+          if (reg) {
+            await reg.unregister();
+            // 清除所有缓存
+            const keys = await caches.keys();
+            await Promise.all(keys.map(k => caches.delete(k)));
+          }
+        }
+        // 重新加载页面
+        window.location.reload(true);
+      }
+    } catch (e) {
+      // 网络不可用时静默失败，不影响正常使用
     }
   }
 
@@ -2445,6 +2477,8 @@ mark {
     await migratePhotosToIndexedDB();
     Router.init();
     registerServiceWorker();
+    // 延迟检测更新，不影响首屏加载
+    setTimeout(() => checkForUpdate(), 2000);
   }
 
   if (document.readyState === 'loading') {
